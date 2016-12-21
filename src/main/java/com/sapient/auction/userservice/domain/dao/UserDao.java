@@ -1,6 +1,8 @@
 /* Copyright (C) 2016 Sapient. All Rights Reserved. */
 package com.sapient.auction.userservice.domain.dao;
 
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
 import com.sapient.auction.userservice.domain.model.User;
 import com.sapient.auction.userservice.exception.UserDaoException;
 
@@ -8,6 +10,7 @@ import com.sapient.auction.userservice.exception.UserDaoException;
  * @author avish9
  * Object for read/writing {@link User} data from/to a data source.
  */
+@EnableJpaRepositories
 public interface UserDao {
 	
 	/**

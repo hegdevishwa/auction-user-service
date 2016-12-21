@@ -22,6 +22,7 @@ import com.sapient.auction.userservice.services.UserService;
  * @author avish9 Controller for {@link User} resources.
  */
 @RestController
+@RequestMapping("/api/userservice")
 public class UserController {
 
 	@Autowired
@@ -54,7 +55,6 @@ public class UserController {
 	@RequestMapping(path = "/user", method = RequestMethod.POST)
 	public ResponseEntity<?> userRegistration(@RequestBody User user) {
 
-		System.out.println(user);
 		try {
 			userService.createUser(user);
 		} catch (ServiceException e) {
@@ -75,26 +75,6 @@ public class UserController {
 		} else {
 			return ResponseEntity.status(HttpStatus.FOUND).body(user);
 		}
-
-		/*
-		 * Authentication auth =
-		 * SecurityContextHolder.getContext().getAuthentication(); String name =
-		 * auth.getName(); if (auth instanceof AnonymousAuthenticationToken) {
-		 * model.addAttribute("msg", "Pls Login First"); return
-		 * ApplicationConstants.LOGIN_VIEW; } else{ HttpSession session =
-		 * request.getSession(false);
-		 * 
-		 * User user= userService.getUserByUserName(name);
-		 * 
-		 * session.setAttribute("username",user.getUserName() );
-		 * session.setAttribute("userId",user.getUserId() );
-		 * model.addAttribute("user", user); model.addAttribute("title",
-		 * "Auction Login Form - Database Authentication");
-		 * model.addAttribute("message", "This is default page!");
-		 * model.addAttribute("firstName", user.getFirstName()); } return
-		 * ApplicationConstants.HOME_VIEW;
-		 */
-
 	}
 
 }

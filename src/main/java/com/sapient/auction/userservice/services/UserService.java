@@ -1,6 +1,8 @@
 /* Copyright (C) 2016 Sapient. All Rights Reserved. */
 package com.sapient.auction.userservice.services;
 
+import java.util.Map;
+
 import com.sapient.auction.userservice.domain.model.User;
 import com.sapient.auction.userservice.exception.ServiceException;
 
@@ -26,5 +28,7 @@ public interface UserService {
 	 * @return user details of given user name.
 	 */
 	public User getUserByUserName(String userName);
+	
+	public Map<String, Object> login(final String userName, final String password);
 
 }

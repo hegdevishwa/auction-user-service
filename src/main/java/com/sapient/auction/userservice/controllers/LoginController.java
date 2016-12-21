@@ -1,22 +1,23 @@
 /* Copyright (C) 2016 Sapient. All Rights Reserved. */
 package com.sapient.auction.userservice.controllers;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.sapient.auction.userservice.constants.ApplicationConstants;
+import com.sapient.auction.userservice.domain.model.User;
 import com.sapient.auction.userservice.services.UserService;
 
 @RestController
+@RequestMapping("/api/userservice")
 public class LoginController {
 
 	/** logger of user controller. */
@@ -25,42 +26,22 @@ public class LoginController {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView defaultPage(@RequestParam(value = "error", required = false) String error,
-			@RequestParam(value = "logout", required = false) String logout) {
-
-		ModelAndView model = new ModelAndView();
-		if (error != null) {
-			model.addObject("error", "Invalid username and password!");
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public ResponseEntity<?> login(@RequestBody User user) {
+		System.out.println("Method login");
+		String userName = user.getUserName();
+		String password = user.getPassword();
+		if (userName == null || password == null) {
+			return ResponseEntity.badRequest().body(new Error("User or password missing, or malformed request"));
 		}
-
-		if (logout != null) {
-			model.addObject("msg", "You've been logged out successfully.");
+		try {
+			Map<String, Object> data = userService.login(userName, password);
+			return ResponseEntity.ok(data);
+		} catch (AuthenticationException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Error(e.getMessage()));
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body(new Error(e.getMessage()));
 		}
-		model.setViewName(ApplicationConstants.LOGIN_VIEW);
-
-		return model;
-
-	}
-
-	// for 403 access denied page
-	@RequestMapping(value = ApplicationConstants.BAD_REQUEST, method = RequestMethod.GET)
-	public ModelAndView accesssDenied() {
-
-		ModelAndView model = new ModelAndView();
-
-		// check if user is login
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			UserDetails userDetail = (UserDetails) auth.getPrincipal();
-			LOGGER.info("user is not valid");
-			model.addObject("username", userDetail.getUsername());
-
-		}
-
-		model.setViewName(ApplicationConstants.BAD_VIEW_403);
-		return model;
-
 	}
 
 }

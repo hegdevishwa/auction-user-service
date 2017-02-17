@@ -12,7 +12,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * @author avish9 Resource representing a User within the system.
  */
 @Entity
 public class User {

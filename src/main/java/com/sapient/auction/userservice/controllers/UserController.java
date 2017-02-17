@@ -52,7 +52,7 @@ public class UserController {
 	 * @return home page.
 	 * @throws UserDaoException
 	 */
-	@RequestMapping(path = "/user", method = RequestMethod.POST)
+	@RequestMapping(path = "/register", method = RequestMethod.POST)
 	public ResponseEntity<?> userRegistration(@RequestBody User user) {
 
 		try {
